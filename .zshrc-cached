@@ -106,6 +106,8 @@ alias rocket="echo 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 �
 alias apple="echo 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 "
 
 #git alias
+alias grpm="git request-pull origin/master"
+
 gbf() {
   echo "git checkout -b feature/$*"
   git checkout -b "feature/$*"
