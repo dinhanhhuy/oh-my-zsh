@@ -106,11 +106,24 @@ alias rocket="echo 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 �
 alias apple="echo 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 "
 
 #git alias
+alias backupZSH="cp /.zshrc /.oh-my-zsh/.zsh-cached"
 alias grpm="git request-pull origin/master"
+alias gm1="git merge --no-ff --no-commit"
+alias gma="git merge --abort"
 
 gbf() {
   echo "git checkout -b feature/$*"
   git checkout -b "feature/$*"
+}
+
+gbh() {
+  echo "git checkout -b hotfix/$*"
+  git checkout -b "hotfix/$*"
+}
+
+gbb() {
+  echo "git checkout -b bug/$*"
+  git checkout -b "bug/$*"
 }
 
 gbi() {
