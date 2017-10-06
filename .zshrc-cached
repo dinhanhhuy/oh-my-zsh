@@ -100,8 +100,11 @@ sshdev() {
   sshpass -p "MMS1@3456" ssh -o StrictHostKeyChecking=no dahuy@192.168.10.65
 }
 
+#custom
+alias cls="clear"
+
 #mark
-alias bee="echo 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝"
+alias bee="echo 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 "
 alias rocket="echo 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 "
 alias apple="echo 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 "
 
@@ -110,6 +113,7 @@ alias backupZSH="cp /.zshrc /.oh-my-zsh/.zsh-cached"
 alias grpm="git request-pull origin/master"
 alias gm1="git merge --no-ff --no-commit"
 alias gma="git merge --abort"
+alias gl="git log"
 
 gbf() {
   echo "git checkout -b feature/$*"
