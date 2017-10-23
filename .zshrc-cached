@@ -88,14 +88,19 @@ source $ZSH/oh-my-zsh.sh
 eval $(thefuck --alias)
 
 #custom function
-alias weather="curl http://wttr.in/Saigon | less"
-quote() {
-  echo "code is fun... if cow 0 bug" | cowthink -e ^^ | lolcat;
-}
-quote
+alias chrome="open -a 'Google Chrome'"
+alias weather="curl http://wttr.in/Saigon,Vietnam?lang=en | less"
 cal1() {
   cal | grep --color -EC6 "\b$(date +%e | sed "s/ //g")";
 }
+quote() {
+  cal1;
+  strQuote="$(echo 'time never comes back \n\r girlfriend sometime does...\n\rAnd i'\''m a coder\n\r100% i code!!!' | cowsay -e '><')"
+  line="\n";
+  str=$strCal$line$strQuote;
+  echo ${str} | lolcat;
+}
+quote
 
 #waxii shortcus config
 alias project="cd ~/Desktop/Project/"
