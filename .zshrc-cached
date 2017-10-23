@@ -84,13 +84,25 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
+#custom variable
 eval $(thefuck --alias)
+
+#custom function
+alias weather="curl http://wttr.in/Saigon | less"
+quote() {
+  echo "code is fun... if cow 0 bug" | cowthink -e ^^ | lolcat;
+}
+quote
+cal1() {
+  cal | grep --color -EC6 "\b$(date +%e | sed "s/ //g")";
+}
 
 #waxii shortcus config
 alias project="cd ~/Desktop/Project/"
 alias wxbackend="cd ~/Desktop/Project/\[PHP\]Waxii/backend/"
 alias wxmail="cd ~/Desktop/Project/\[PHP\]MailService/backend-mail"
 alias wxios="cd ~/Desktop/Project/\[iOS\]\ waxii/ios/"
+alias wxdoc="node ~/Desktop/Project/\[PHP\]Waxii/backend/public/_doc/build.js"
 
 sshtest() {
   sshpass -p "MMS1@3456" ssh -o StrictHostKeyChecking=no dahuy@192.168.10.147
@@ -104,7 +116,7 @@ sshdev() {
 alias cls="clear"
 
 #mark
-alias bee="echo 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 "
+alias bee="echo 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝"
 alias rocket="echo 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 "
 alias apple="echo 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 "
 
@@ -114,6 +126,7 @@ alias grpm="git request-pull origin/master"
 alias gm1="git merge --no-ff --no-commit"
 alias gma="git merge --abort"
 alias gl="git log"
+alias gd1="gd --cached"
 
 gbf() {
   echo "git checkout -b feature/$*"
