@@ -95,10 +95,10 @@ cal1() {
 }
 quote() {
   cal1;
-  strQuote="$(echo 'time never comes back \n\r girlfriend sometime does...\n\rAnd i'\''m a coder\n\r100% i code!!!' | cowsay -e '><')"
+  strQuote="$(echo 'time never comes back \n\r girlfriend sometime does...\n\rI'\''m a coder\n\r100% i code!!!' | cowsay -e '><')"
   line="\n";
   str=$strCal$line$strQuote;
-  echo ${str} | lolcat;
+  echo ${str}
 }
 quote
 
@@ -109,12 +109,34 @@ alias wxmail="cd ~/Desktop/Project/\[PHP\]MailService/backend-mail"
 alias wxios="cd ~/Desktop/Project/\[iOS\]\ waxii/ios/"
 alias wxdoc="node ~/Desktop/Project/\[PHP\]Waxii/backend/public/_doc/build.js"
 
+sshvyt() {
+  sshpass -p "VytgrouP12#" ssh -o VisualHostKey=yes root@139.59.225.231
+}
+
+tvyt() {
+  sshvyt()
+  tlog $*
+}
+
+tvyt1() {
+  sshvyt()
+  tlog1 $*
+}
+
 sshtest() {
-  sshpass -p "MMS1@3456" ssh -o StrictHostKeyChecking=no dahuy@192.168.10.147
+  sshpass -p "MMS1@3456" ssh -o VisualHostKey=yes dahuy@192.168.10.147
+}
+
+sshjenkin() {
+  sshpass -p "123456" ssh -o VisualHostKey=yes vqminh@192.168.10.202
 }
 
 sshdev() {
-  sshpass -p "MMS1@3456" ssh -o StrictHostKeyChecking=no dahuy@192.168.10.65
+  sshpass -p "MMS1@3456" ssh -o VisualHostKey=yes dahuy@192.168.10.65
+}
+
+sshrelease() {
+  sshpass -p "luosthebot" ssh -o VisualHostKey=yes root@192.168.10.13
 }
 
 #custom
@@ -151,6 +173,11 @@ gbb() {
 gbi() {
   echo "git checkout -b bug/$*"
   git checkout -b "bug/$*"
+}
+
+gp1() {
+  currentBranch=$(git branch | sed -n -e 's/^\* \(.*\)/\1/p')
+  git pull origin $currentBranch
 }
 
 gmb() {
