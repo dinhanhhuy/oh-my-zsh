@@ -88,6 +88,7 @@ source $ZSH/oh-my-zsh.sh
 eval $(thefuck --alias)
 
 #custom function
+alias reload="source ~/.zshrc"
 alias chrome="open -a 'Google Chrome'"
 alias weather="curl http://wttr.in/Saigon,Vietnam?lang=en | less"
 cal1() {
@@ -136,7 +137,7 @@ sshdev() {
 }
 
 sshrelease() {
-  sshpass -p "luosthebot" ssh -o VisualHostKey=yes root@192.168.10.13
+  sshpass -p "luosthebot" ssh -o VisualHostKey=yes root@192.168.10.13 $*
 }
 
 #custom
@@ -154,10 +155,72 @@ alias gm1="git merge --no-ff --no-commit"
 alias gma="git merge --abort"
 alias gl="git log"
 alias gd1="gd --cached"
+alias gc0="git checkout master"
+alias gc1="git checkout"
+
+wxdeploy() {
+  echo "$(tput setaf 3)start get scrumb$(tput setaf 0)"
+  crumb=$(curl -u "nndhuy:123456" 'http://192.168.10.202:8087/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,":",//crumb)')
+  
+  #start deploy to dev 
+  echo "$(tput setaf 2)crumb: [$crumb]"
+  echo "$(tput setaf 3)start run job [update-dev__waxii-backend]$(tput setaf 0)"
+  result=$(curl -X POST -H "$crumb" http://192.168.10.202:8087/job/update-dev__waxii-backend/build --user nndhuy:e5ae33cc831464fc98ba1736a83158bb)
+  echo "$(tput setaf 2)result: [$result]$(tput setaf 0)"
+
+  #check deploy to dev finish
+  echo "$(tput setaf 3)waiting job [update-dev__waxii-backend] finish$(tput setaf 0)"
+  JOB_URL=http://192.168.10.202:8087/job/update-dev__waxii-backend
+  JOB_STATUS_URL=${JOB_URL}/lastBuild/api/json
+
+  GREP_RETURN_CODE=0
+  # Poll every thirty seconds until the build is finished
+  while [ $GREP_RETURN_CODE -eq 0 ]
+  do
+    sleep 30
+    # Grep will return 0 while the build is running:
+    curl --silent $JOB_STATUS_URL | grep result\":null > /dev/null
+    GREP_RETURN_CODE=$?
+  done
+  echo "$(tput setaf 2)job [update-dev__waxii-backend] process finish$(tput setaf 0)"
+
+  #start deploy to test
+  echo "$(tput setaf 3)start run job [dev-test__waxii-backend]$(tput setaf 0)"
+  result=$(curl -X POST -H "$crumb" http://192.168.10.202:8087/job/dev-test__waxii-backend/build --user nndhuy:e5ae33cc831464fc98ba1736a83158bb)
+  echo "$(tput setaf 2)result: [$result]$(tput setaf 0)"
+  
+  echo "$(tput setaf 3)deploy to release server$(tput setaf 1)"
+  read -n -q "reply?are you sure? [y/n]$(tput setaf 2)"
+  echo "$(tput setaf 0)"
+  if [[ $reply =~ ^[Yy]$ ]]
+  then
+    echo "$(tput setaf 3)start [git pull origin master]$(tput setaf 0)"
+    sshrelease "cd '/var/www/html/waxii-backend' && git pull "http://vxvinh:MMS1234566@bitbucket.mmsoft.vn/scm/waxii/backend.git" master"
+    return 0
+  else
+    echo "$(tput setaf 3)stop deploy server release"
+  fi
+}
 
 gbf() {
-  echo "git checkout -b feature/$*"
-  git checkout -b "feature/$*"
+  branchPrefix="feature/"
+  prefixLen=${#branchPrefix}
+  newBranch=""
+  if [[ $* =~ "$branchPrefix*" ]]; then
+    newBranch="$branchPrefix${*:$prefixLen:300}"
+    echo "$(tput setaf 3)found prefix in branch name, attemp rename to: $(tput setaf 1) $newBranch"
+    read -n -q "reply?are you sure? [y/n]"
+    echo "\r" 
+    if [[ ! $reply =~ ^[Yy]$ ]]
+    then
+      tput setaf 1; echo "stop create new branch"
+      return 0
+    fi
+  else
+    newBranch="$branchPrefix$*"
+  fi
+  echo "$(tput setaf 0)git checkout -b";
+  git checkout -b "$newBranch"
 }
 
 gbh() {
