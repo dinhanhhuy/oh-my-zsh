@@ -103,6 +103,11 @@ quote() {
 }
 quote
 
+#react-native
+alias rn="react-native"
+alias rn1="react-native run-ios"
+alias rn2="react-native run-android"
+
 #waxii shortcus config
 alias project="cd ~/Desktop/Project/"
 alias wxbackend="cd ~/Desktop/Project/\[PHP\]Waxii/backend/"
@@ -137,11 +142,16 @@ sshdev() {
 }
 
 sshrelease() {
-  sshpass -p "luosthebot" ssh -o VisualHostKey=yes root@192.168.10.13 $*
+  ssh -i /Users/huyda/sshkey/mac_mini_02 root@192.168.10.13 $*
+}
+
+sshbss() {
+  ssh -i /Users/huyda/sshkey/mac_mini_02 huyda@35.201.193.78 
 }
 
 #custom
 alias cls="clear"
+alias history="history | less"
 
 #mark
 alias bee="echo 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝 🐝"
@@ -149,7 +159,8 @@ alias rocket="echo 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 �
 alias apple="echo 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 "
 
 #git alias
-alias backupZSH="cp /.zshrc /.oh-my-zsh/.zsh-cached"
+alias zsh-backup="cp /Users/huyda/.zshrc /Users/huyda/.oh-my-zsh/.zshrc-cached"
+alias zsh-reload="cp /Users/huyda/.oh-my-zsh/.zshrc-cached /Users/huyda/.zshrc"
 alias grpm="git request-pull origin/master"
 alias gm1="git merge --no-ff --no-commit"
 alias gma="git merge --abort"
@@ -157,8 +168,14 @@ alias gl="git log"
 alias gd1="gd --cached"
 alias gc0="git checkout master"
 alias gc1="git checkout"
+alias ip1="ipconfig getifaddr en1"
+alias rm1="trash $*"
 
-wxdeploy() {
+wxtest() {
+  ~/Desktop/Project/\[PHP\]Waxii/backend/vendor/bin/phpunit $*
+}
+
+wxdeploy1() {
   echo "$(tput setaf 3)start get scrumb$(tput setaf 0)"
   crumb=$(curl -u "nndhuy:123456" 'http://192.168.10.202:8087/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,":",//crumb)')
   
@@ -195,11 +212,44 @@ wxdeploy() {
   if [[ $reply =~ ^[Yy]$ ]]
   then
     echo "$(tput setaf 3)start [git pull origin master]$(tput setaf 0)"
-    sshrelease "cd '/var/www/html/waxii-backend' && git pull "http://vxvinh:MMS1234566@bitbucket.mmsoft.vn/scm/waxii/backend.git" master"
+    sshrelease "cd '/var/www/html/waxii-backend' && git pull "http://vxvinh:MMS1234566@bitbucket.mmsoft.vn/scm/waxii/backend.git" master && git show --summary"
     return 0
   else
     echo "$(tput setaf 3)stop deploy server release"
   fi
+}
+
+wxdeploy() {
+  if [[ ! -z "$(git status --porcelain)" ]]; then 
+    echo "$(tput setaf 3)Detect uncommitted changes$(tput setaf 1)"
+    gss
+    read -n -q "reply?$(tput setaf 1)do you want continue deploy?[y/n]$(tput setaf 2)"
+    echo "$(tput setaf 0)" 
+    if [[ ! $reply =~ ^[Yy]$ ]]
+    then
+      echo "$(tput setaf 3)stop deploy"
+      return 0
+    fi
+  fi
+
+  echo "$(tput setaf 3)start testing$(tput setaf 0)"
+  wxtest $*
+  if [[ $? == 0 ]] then #success case
+    echo "$(tput setaf 2)test success, start deploy$(tput setaf 0)"    
+    wxdeploy1
+  else #fail case
+    echo "$(tput setaf 3)test error$(tput setaf 1)"
+    read -n -q "reply?do you want continue deploy?[y/n]$(tput setaf 2)"
+    echo "$(tput setaf 0)"
+    if [[ $reply =~ ^[Yy]$ ]]
+    then
+      echo "$(tput setaf 3)start deploy$(tput setaf 0)"
+      wxdeploy1
+    else
+      echo "$(tput setaf 3)stop deploy"
+    fi
+  fi
+
 }
 
 gbf() {
