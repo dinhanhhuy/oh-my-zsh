@@ -161,14 +161,14 @@ alias apple="echo 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 �
 #git alias
 alias zsh-backup="cp /Users/huyda/.zshrc /Users/huyda/.oh-my-zsh/.zshrc-cached"
 alias zsh-reload="cp /Users/huyda/.oh-my-zsh/.zshrc-cached /Users/huyda/.zshrc"
-alias grpm="git request-pull origin/master"
-alias gm1="git merge --no-ff --no-commit"
-alias gma="git merge --abort"
-alias gl="git log"
-alias gd1="gd --cached"
-alias gc0="git checkout master"
-alias gc1="git checkout"
-alias ip1="ipconfig getifaddr en1"
+alias grpm="git request-pull origin/master $*"
+alias gm1="git merge --no-ff --no-commit $*"
+alias gma="git merge --abort $*"
+alias gl="git log $*"
+alias gd1="gd --cached $*"
+alias gc0="git checkout master $*"
+alias gc1="git checkout $*"
+alias ip1="ipconfig getifaddr en1 $*"
 alias rm1="trash $*"
 
 wxtest() {
