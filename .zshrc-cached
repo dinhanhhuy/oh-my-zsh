@@ -163,7 +163,7 @@ alias rocket="echo 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 �
 alias apple="echo 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 "
 
 #git alias
-alias zsh-backup="cp /Users/huyda/.zshrc /Users/huyda/.oh-my-zsh/.zshrc-cached"
+alias zshbackup="cp /Users/huyda/.zshrc /Users/huyda/.oh-my-zsh/.zshrc-cached"
 alias grpm="git request-pull origin/master $*"
 alias gm1="git merge --no-ff --no-commit $*"
 alias gma="git merge --abort $*"
@@ -189,7 +189,7 @@ detectcommit() {
   fi
 }
 
-zsh-reload() {
+zshreload() {
   echo "diff -c ~/.zshrc ~/.oh-my-zsh/.zshrc-cached | colordiff"
   diff -c ~/.zshrc ~/.oh-my-zsh/.zshrc-cached | colordiff
   rinput "$(tput setaf 0)Update current setting$(tput setaf 1)" "$(tput setaf 3)skip"
