@@ -146,7 +146,11 @@ sshrelease() {
 }
 
 sshbss() {
-  ssh -i /Users/huyda/sshkey/mac_mini_02 huyda@35.201.193.78 
+  ssh -i /Users/huyda/sshkey/mac_mini_02 huyda@35.201.193.78
+}
+
+sshflex() {
+  sshpass -p "MMS123456" ssh -o VisualHostKey=yes dahuy@192.168.10.11 $*
 }
 
 #custom
@@ -170,6 +174,89 @@ alias gc0="git checkout master $*"
 alias gc1="git checkout $*"
 alias ip1="ipconfig getifaddr en1 $*"
 alias rm1="trash $*"
+alias gba1="git for-each-ref --format='%(committerdate) %09 %(authorname) %09 %(refname)' | sort -k5n -k2M -k3n -k4n"
+
+detectcommit() {
+  if [[ ! -z "$(git status --porcelain)" ]]; then
+    echo "$(tput setaf 3)Detect uncommitted changes$(tput setaf 1)"
+    gss
+    read -n -q "reply?$(tput setaf 1)do you want continue $1?[y/n]$(tput setaf 2)"
+    echo "$(tput setaf 0)"
+    if [[ ! $reply =~ ^[Yy]$ ]]
+    then
+      echo "$(tput setaf 3)stop $1"
+      return 0
+    fi
+  fi
+}
+
+rinput() {
+  read -n -q "reply?$(tput setaf 1)$1[y/n]$(tput setaf 2)"
+  echo "$(tput setaf 0)"
+  if [[ ! $reply =~ ^[Yy]$ ]] then
+    echo "$(tput setaf 3)$2"
+    return 1
+  fi
+  return 0
+}
+
+deployflex() {
+  detectcommit "deploy"
+  sshpass -p "MMS123456" ssh -o VisualHostKey=yes dahuy@192.168.10.11 "echo MMS12345 | sudo -S deploy"
+}
+
+flexscpdb() {
+  echo "ssh + export db"
+  sshflex "mysqldump -u root flex_v2_db > /home/dahuy/backup.sql"
+  echo "transfer db $?"
+  scp dahuy@192.168.10.11:/home/dahuy/table_backup.sql backup.sql
+  echo "import db to local $?"
+  mysql -uroot -proot! flex_v2_db < backup.sql
+  echo "return $?"
+}
+
+flexdoc() {
+  fl_doc_group=$1
+  fl_doc_module=$2
+  fl_doc_function=$3
+
+  fl_doc_module_lower="$(echo $fl_doc_module | tr '[:upper:]' '[:lower:]')s"
+  fl_doc_function_lower="$(echo $fl_doc_function | tr '[:upper:]' '[:lower:]')s"
+  #read and replace text in api document
+  fl_file_content="$(cat ~/.flex-api-doc)"
+  fl_file_content=${fl_file_content//{{module_lower}}/$fl_doc_module_lower}
+  fl_file_content=${fl_file_content//{{function_lower}}/$fl_doc_function_lower}
+  fl_file_content=${fl_file_content//{{module}}/$fl_doc_module}
+  fl_file_content=${fl_file_content//{{function}}/$fl_doc_function}
+  fl_file_content=${fl_file_content//{{group}}/$fl_doc_group}
+}
+
+flexcreates() {
+  echo 'input module names'
+  while read line; do
+    fl_input_module_name=$line
+    flexcreate $fl_input_module_name
+  done
+}
+
+flexcreate() {
+  fl_prefix=$1
+  declare -a fl_arr=("Create" "Delete" "Update" "Search" "Suspend")
+  fl_folder="$(echo $fl_prefix | tr '[:upper:]' '[:lower:]')s"
+  fl_module_path="$PWD/$fl_folder"
+  mkdir $fl_folder
+  echo "create module $(tput setaf 2)$fl_module_path$(tput setaf 0)"
+
+  for fl_module in "${fl_arr[@]}"; do
+    flexdoc $fl_prefix $fl_prefix $fl_module
+
+    fl_file_name="$fl_prefix$fl_module.js"
+    fl_file_path="$fl_module_path/$fl_file_name"
+    echo "create file $(tput setaf 2)$fl_path/$fl_file_name$(tput setaf 0)"
+    fl_file_content+="\nconst $fl_prefix$fl_module =  (req, res, next) => {\n\tres.json(\"$fl_module done\");\n}\nmodule.exports = {\n\t$fl_prefix$fl_module\n}"
+    echo $fl_file_content > $fl_file_path
+  done
+}
 
 wxtest() {
   ~/Desktop/Project/\[PHP\]Waxii/backend/vendor/bin/phpunit $*
@@ -294,12 +381,23 @@ gp1() {
 }
 
 gmb() {
-  git branch --merged master
+  rawbranchs=$(git branch --merged $1 | egrep -v "(^\*|master|develop)")
+  if [[ $2 == "-s" ]]; then
+    return 0
+  fi
+  echo $rawbranchs
 }
 
 gdmb() {
-  git branch --merged | egrep -v "(^\*|master|dev)" | xargs git branch -d
-  git branch -r --merged | grep -v master | sed 's/origin\//:/' | xargs -n 1 git push origin
+  gmb develop -s
+  echo "$rawbranchs" | while read each
+  do
+    rinput "$(tput setaf 0)delete branch$(tput setaf 1) $each$(tput setaf 0)" "skip"
+    if [[ $? == 0 ]]; then
+      git branch -d $each
+      git push origin --delete $each
+    fi
+  done
 }
 
 gl1() {
@@ -308,4 +406,14 @@ gl1() {
 
 gl2() {
   git log --graph --abbrev-commit --decorate --date=relative --all
+}
+
+gltd() {
+  today=$(echo date +'%m/%d/%Y')
+  author="dahuy"
+  gld $author $today
+}
+
+gld() {
+  git log --pretty=oneline --abbrev-commit --author=$1 --after="$2 0:0:0" --before="$2 23:59:59"
 }
