@@ -190,7 +190,8 @@ detectcommit() {
 }
 
 zsh-reload() {
-  diff -c ~/.oh-my-zsh/.zshrc-cached ~/.zshrc | colordiff
+  echo "diff -c ~/.zshrc ~/.oh-my-zsh/.zshrc-cached | colordiff"
+  diff -c ~/.zshrc ~/.oh-my-zsh/.zshrc-cached | colordiff
   rinput "$(tput setaf 0)Update current setting$(tput setaf 1)" "$(tput setaf 3)skip"
   if [[ $? == 0 ]]; then
     echo "$(tput setaf 2)cp ~/.zshrc ~/.zshrc-cached"
