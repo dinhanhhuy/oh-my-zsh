@@ -146,7 +146,7 @@ sshrelease() {
 }
 
 sshbss() {
-  ssh -i /Users/huyda/sshkey/mac_mini_02 huyda@35.201.193.78
+  ssh -i ~/sshkey/mac_mini_02 huyda@35.227.22.166 $*
 }
 
 sshflex() {
@@ -164,7 +164,6 @@ alias apple="echo 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 🍎 �
 
 #git alias
 alias zsh-backup="cp /Users/huyda/.zshrc /Users/huyda/.oh-my-zsh/.zshrc-cached"
-alias zsh-reload="cp /Users/huyda/.oh-my-zsh/.zshrc-cached /Users/huyda/.zshrc"
 alias grpm="git request-pull origin/master $*"
 alias gm1="git merge --no-ff --no-commit $*"
 alias gma="git merge --abort $*"
@@ -188,6 +187,23 @@ detectcommit() {
       return 0
     fi
   fi
+}
+
+zsh-reload() {
+  diff -c ~/.oh-my-zsh/.zshrc-cached ~/.zshrc | colordiff
+  rinput "$(tput setaf 0)Update current setting$(tput setaf 1)" "$(tput setaf 3)skip"
+  if [[ $? == 0 ]]; then
+    echo "$(tput setaf 2)cp ~/.zshrc ~/.zshrc-cached"
+    cp ~/.zshrc ~/.zshrc-cached
+    echo "$(tput setaf 2)cp ~/.oh-my-zsh/.zshrc-cached ~/.zshrc"
+    cp ~/.oh-my-zsh/.zshrc-cached ~/.zshrc
+    return 0
+  fi
+  echo 
+}
+
+diff1() {
+  diff -c $1 $2 | colordiff 
 }
 
 rinput() {
